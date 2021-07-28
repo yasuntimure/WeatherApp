@@ -13,17 +13,16 @@ struct ContentView: View {
   
     var body: some View {
       ZStack{
-        LinearGradient(gradient: Gradient(colors: [Color.blue, Color("lightBlue")]),
-                       startPoint: .topLeading,
-                       endPoint: .bottomTrailing)
-          .edgesIgnoringSafeArea(.all)
+        
+        BackgroundView(topColor: Color.blue, bottomColor: Color("lightBlue"))
+        
         VStack{
-          Text("Cupertino, CA")
-            .font(.system(size: 32, weight: .medium, design: .default))
-            .foregroundColor(.white)
-            .padding()
-          WheaterView()
+          
+          CityNameView(cityName: "Cupertino, CA")
+          
+          MainWheaterStatusView(imageName: "cloud.sun.fill", temperature: 76)
             .padding(.bottom, 50)
+          
           HStack{
             WheaterDayView(dayOfWeek: "TUE",
                            imageName: "cloud.sun.fill",
@@ -46,6 +45,7 @@ struct ContentView: View {
                            temperature: 77)
           }
           .padding(.bottom, 100)
+          
           Button(buttonText) {
             if buttonText == "Change Day Time" {
               buttonText = "Day Time Changed"
@@ -71,15 +71,39 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct WheaterView: View {
+
+struct BackgroundView: View {
+  var topColor: Color
+  var bottomColor: Color
+  var body: some View {
+    LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
+                   startPoint: .topLeading,
+                   endPoint: .bottomTrailing)
+      .edgesIgnoringSafeArea(.all)
+  }
+}
+
+struct CityNameView: View {
+  var cityName: String
+  var body: some View {
+    Text(cityName)
+      .font(.system(size: 32, weight: .medium, design: .default))
+      .foregroundColor(.white)
+      .padding(50)
+  }
+}
+
+struct MainWheaterStatusView: View {
+  var imageName: String
+  var temperature: Int
   var body: some View {
     VStack(spacing: 5){
-      Image(systemName: "cloud.sun.fill")
+      Image(systemName: imageName)
         .renderingMode(.original)
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .frame(width: 180, height: 180)
-      Text("76°")
+        .frame(width: UIScreen.main.bounds.width / 2)
+      Text("\(temperature)°")
         .font(.system(size: 70, weight: .medium))
         .foregroundColor(.white)
     }
