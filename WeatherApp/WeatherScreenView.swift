@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct WeatherScreenView: View {
   
   @State var buttonText: String = "Change Day Time"
   @State private var isNight: Bool = false
@@ -68,7 +68,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
       Group {
-        ContentView()
+        WeatherScreenView()
           .previewDevice("iPhone 12 Pro Max")
       }
     }
