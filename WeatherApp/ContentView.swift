@@ -10,17 +10,19 @@ import SwiftUI
 struct ContentView: View {
   
   @State var buttonText: String = "Change Day Time"
+  @State private var isNight: Bool = false
+  
   
     var body: some View {
       ZStack{
         
-        BackgroundView(topColor: Color.blue, bottomColor: Color("lightBlue"))
+        BackgroundView(isNight: $isNight)
         
         VStack{
           
           CityNameView(cityName: "Cupertino, CA")
           
-          MainWheaterStatusView(imageName: "cloud.sun.fill", temperature: 76)
+          MainWheaterStatusView(imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill", temperature: 76)
             .padding(.bottom, 50)
           
           HStack{
@@ -47,6 +49,7 @@ struct ContentView: View {
           .padding(.bottom, 100)
           
           Button(buttonText) {
+            isNight.toggle()
             if buttonText == "Change Day Time" {
               buttonText = "Day Time Changed"
             } else {
@@ -54,7 +57,7 @@ struct ContentView: View {
             }
             print("tapped")
           }
-          .buttonStyle(CustomButton())
+          .buttonStyle(CustomButton(size: 20))
       
           Spacer()
         }
@@ -73,10 +76,11 @@ struct ContentView_Previews: PreviewProvider {
 
 
 struct BackgroundView: View {
-  var topColor: Color
-  var bottomColor: Color
+  
+  @Binding var isNight: Bool
+  
   var body: some View {
-    LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
+    LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue, isNight ? .gray : Color("lightBlue")]),
                    startPoint: .topLeading,
                    endPoint: .bottomTrailing)
       .edgesIgnoringSafeArea(.all)
@@ -102,7 +106,7 @@ struct MainWheaterStatusView: View {
         .renderingMode(.original)
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .frame(width: UIScreen.main.bounds.width / 2)
+        .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.width / 2)
       Text("\(temperature)°")
         .font(.system(size: 70, weight: .medium))
         .foregroundColor(.white)
@@ -136,12 +140,15 @@ struct WheaterDayView: View {
 }
 
 struct CustomButton: ButtonStyle {
+  
+  var size: CGFloat
+  
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding()
+          .padding(.all)
             .background(Color.white)
             .foregroundColor(.blue)
             .cornerRadius(10)
-            .font(.system(size: 20, weight: .bold))
+            .font(.system(size: size, weight: .bold))
     }
 }
